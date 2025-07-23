@@ -14,12 +14,15 @@ model_name = "gpt2"
 model = GPT2LMHeadModel.from_pretrained(model_name)
 tokenizer = GPT2Tokenizer.from_pretrained(model_name)
 
+# Set padding token
+tokenizer.pad_token = tokenizer.eos_token
+
 # Load dataset using datasets library
 dataset = load_dataset("text", data_files={"train": dataset_path})
 
 # Tokenize dataset
 def tokenize_function(examples):
-    return tokenizer(examples["text"], truncation=True, max_length=128, clean_up_tokenization_spaces=True)
+    return tokenizer(examples["text"], truncation=True, max_length=64, clean_up_tokenization_spaces=True)
 
 tokenized_dataset = dataset["train"].map(tokenize_function, batched=True)
 data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
@@ -29,7 +32,7 @@ training_args = TrainingArguments(
     output_dir="./fine_tuned_gpt2",
     overwrite_output_dir=True,
     num_train_epochs=3,
-    per_device_train_batch_size=4,
+    per_device_train_batch_size=1,  # For Codespaces
     save_steps=500,
     save_total_limit=2,
     logging_dir='./logs',
