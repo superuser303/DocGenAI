@@ -6,7 +6,7 @@ import spacy
 nlp = spacy.load("en_core_web_sm")
 
 # Test image analysis
-test_image = "test_data/sample_document.jpg"
+test_image = "test_data/sample_document.jpg"  # Add a sample image
 text = pytesseract.image_to_string(Image.open(test_image))
 doc = nlp(text)
 

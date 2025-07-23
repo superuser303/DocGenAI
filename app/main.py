@@ -12,9 +12,9 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Load fine-tuned model (or default GPT-2 if not fine-tuned)
-generator = GPT2LMHeadModel.from_pretrained("./fine_tuned_gpt2" if os.path.exists("./fine_tuned_gpt2") else "gpt2")
-tokenizer = GPT2Tokenizer.from_pretrained("./fine_tuned_gpt2" if os.path.exists("./fine_tuned_gpt2") else "gpt2")
+# Load fine-tuned model
+generator = GPT2LMHeadModel.from_pretrained("./fine_tuned_gpt2")
+tokenizer = GPT2Tokenizer.from_pretrained("./fine_tuned_gpt2")
 nlp = spacy.load("en_core_web_sm")
 
 @app.get("/", response_class=HTMLResponse)
@@ -41,7 +41,7 @@ async def analyze_document(file: UploadFile = File(...)):
         structured_data = {
             "text": text,
             "entities": entities,
-            "tables": []
+            "tables": []  # Add donut or layoutparser later
         }
         return {"extracted_data": structured_data}
     except Exception as e:
